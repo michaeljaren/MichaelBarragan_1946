@@ -3,48 +3,50 @@
 #include <time.h>
 using namespace std;
 
-// Llena el vector con números aleatorios entre 1 y 20
-void llenaVector(int v[], int n) {
-    srand(time(NULL)); // Semilla para la generación de números aleatorios
-    for (int i = 0; i < n; i++) {
-        v[i] = rand() % 20 + 1; // Números entre 1 y 20
+void llenaVector (int v[], int n){
+    srand(time(NULL)); // función semilla para generar numeros
+    for (int i = 0; i < n; i ++){
+        v[i] = rand() % 20 + 1;
+        //cin >> v[i];
     }
 }
 
-// Ordena el vector usando el método de la burbuja
-void ordenaBurbuja(int v[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (v[j] > v[j + 1]) {
-                // Intercambio de elementos
-                int aux = v[j];
+int ordenaBurbuja (int v[], int n){
+    int mejora=1;
+    int aux, contador = 0;
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n - mejora; j++){
+            contador++;
+            if (v[j] > v[j + 1]){
+                aux = v[j];
                 v[j] = v[j + 1];
                 v[j + 1] = aux;
             }
+        
         }
+        mejora ++;
     }
+    return contador;
 }
 
-// Muestra los elementos del vector
-void muestraVector(int v[], int n) {
-    for (int i = 0; i < n; i++) {
+void muestraVector (int v[], int n){
+    for (int i = 0; i < n; i++){
         cout << v[i] << " ";
     }
-    cout << endl;
 }
 
-// Función principal
-int main() {
+main (){
     int ne;
-    cout <<"Ingresa numero de elementos" << endl;
+    cout << "Numero de elementos: ";
     cin >> ne;
-    int v[ne];
-    llenaVector(v, ne);
+    int vec [ne];
+    llenaVector (vec,ne);
     cout << "Vector original: ";
-    muestraVector(v, ne);
-    ordenaBurbuja(v, ne);
-    cout << "Vector ordenado: ";
-    muestraVector(v, ne);
-    return 0;
+    muestraVector (vec, ne);
+    cout << endl;
+    cout << "El numero de comparaciones burbuja v1 = " << ordenaBurbuja (vec, ne);
+    ordenaBurbuja (vec, ne);
+    cout << "\nVector ordenado: "<<endl;
+    muestraVector(vec,ne);
 }
 
