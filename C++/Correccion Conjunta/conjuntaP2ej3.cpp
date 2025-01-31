@@ -41,7 +41,7 @@ string determinarGanadorRonda(string usuario, string maquina) {
 string determinarGanadorJuego(int puntosUsuario, int puntosMaquina) {
     if (puntosUsuario > puntosMaquina) return "Usuario";
     else if (puntosMaquina > puntosUsuario) return "Maquina";
-    else return "Empate";
+    else return " El Empate";
 }
 
 // Función principal para jugar el juego

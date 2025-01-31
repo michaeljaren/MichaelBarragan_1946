@@ -1,19 +1,27 @@
 #include <iostream>
-#include <cctype> // Para funciones isdigit y isalpha 
-// se usa  para clasificar caracteres y comprobar si un carácter tiene un atributo específico
+#include <string>   //almacenamiento de cadenas
 
-// Función para identificar el tipo de cadena
+// Funciones equivalentes a isdigit e isalpha
+bool esDigito(char c) {
+    return c >= '0' && c <= '9';
+}
+
+bool esLetra(char c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
+// Función principal
 std::string identificarTipoCadena(const char* cadena) {
     bool tieneDigitos = false;
     bool tieneLetras = false;
 
     for (int i = 0; cadena[i] != '\0'; i++) {
-        if (std::isdigit(cadena[i])) {
+        if (esDigito(cadena[i])) {
             tieneDigitos = true;
-        } else if (std::isalpha(cadena[i])) {
+        } else if (esLetra(cadena[i])) {
             tieneLetras = true;
         } else {
-            // Caracteres especiales encontrados especialemente el arroba @
+            // Caracteres especiales encontrados
             return "La cadena contiene caracteres especiales.";
         }
     }
@@ -31,9 +39,6 @@ std::string identificarTipoCadena(const char* cadena) {
 }
 
 int main() {
-    
-
-    // Ejemplo
     char input[100];
     std::cout << "Introduce una cadena: ";
     std::cin.getline(input, 100);
