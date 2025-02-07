@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graficadora de Funciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #results {
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+        canvas {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 400px; /* Mantener altura */
+        }
+        #chartContainer {
+            position: relative;
+            height: 400px; /* Mantener altura del contenedor de la gráfica */
+            margin-top: 20px; /* Espacio entre la gráfica y el resto */
+        }
+        .function-input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Graficadora de Funciones</h1>
+        <form id="functionForm">
+            <label for="function">Ingresa la función (ej. x*x):</label>
+            <input type="text" id="function" required class="function-input">
+            <button type="button" id="addFunction">Agregar otra función</button>
+            <div id="additionalFunctions"></div>
+            <label for="start">Inicio del intervalo:</label>
+            <input type="number" id="start" required>
+            <label for="end">Fin del intervalo:</label>
+            <input type="number" id="end" required>
+            <button type="submit"><i class="fas fa-chart-line"></i> Graficar y Calcular</button>
+        </form>
+        <div id="chartContainer">
+            <canvas id="functionChart"></canvas>
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('functionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const funcInputs = document.querySelectorAll('.function-input');
+            const functions = Array.from(funcInputs).map(input => input.value); // Obtener todas las funciones
+            const start = parseFloat(document.getElementById('start').value);
+            const end = parseFloat(document.getElementById('end').value);
+            graficarFunciones(functions, start, end);
+        });
+
+        document.getElementById('addFunction').addEventListener('click', function() {
+            const newFunctionInput = document.createElement('input');
+            newFunctionInput.type = 'text';
+            newFunctionInput.className = 'function-input';
+            newFunctionInput.placeholder = 'Ingresa otra función (ej. x + 2)';
+            document.getElementById('additionalFunctions').appendChild(newFunctionInput);
+        });
+
+        function graficarFunciones(funcs, start, end) {
+            const ctx = document.getElementById('functionChart').getContext('2d');
+            const labels = Array.from({length: 100}, (_, i) => start + (end - start) * i / 99); // Generar puntos
+            const datasets = funcs.map((func, index) => ({
+                label: 'y = ' + func,
+                data: labels.map(x => eval(func.replace(/x/g, x))), // Evaluar la función
+                borderColor: `hsl(${index * 360 / funcs.length}, 100%, 50%)`, // Color diferente para cada función
+                borderWidth: 2,
+                fill: false,
+            }));
+
+            const area = calcularArea(funcs[0], start, end);
+            const volume = calcularVolumen(funcs[0], start, end);
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets,
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Valor de la función'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'X'
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'xy' // Habilitar desplazamiento en ambos ejes
+                        },
+                        zoom: {
+                            enabled: true,
+                            mode: 'xy' // Habilitar zoom en ambos ejes
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('results').innerHTML = `
+                <strong>Resultados:</strong><br>
+                Área bajo la curva: ${area.toFixed(2)}<br>
+                Volumen: ${volume.toFixed(2)}
+            `;
+        }
+
+        function calcularArea(func, start, end) {
+            let area = 0;
+            const n = 1000; // Número de trapezoides
+            const dx = (end - start) / n;
+            for (let i = 0; i < n; i++) {
+                const x1 = start + i * dx;
+                const x2 = start + (i + 1) * dx;
+                area += 0.5 * (eval(func.replace(/x/g, x1)) + eval(func.replace(/x/g, x2))) * dx;
+            }
+            return area;
+        }
+
+        function calcularVolumen(func, start, end) {
+            let volume = 0;
+            const n = 1000; // Número de discos
+            const dx = (end - start) / n;
+            for (let i = 0; i < n; i++) {
+                const x = start + i * dx;
+                volume += Math.PI * Math.pow(eval(func.replace(/x/g, x)), 2) * dx; // Volumen de revolución
+            }
+            return volume;
+        }
+    </script>
+</body>
+</html>
