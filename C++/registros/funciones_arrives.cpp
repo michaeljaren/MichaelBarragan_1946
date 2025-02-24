@@ -15,7 +15,7 @@ void ingresarDatosRegristro(persona per[], int n) {
     for (int i = 0; i < n; i++) {
         per[i].id = i + 1;
         cout << "Ingrese nombre y apellido: ";
-        getline(cin, per[i].nombre); // Captura nombre completo
+        getline(cin, per[i].nombre); // Captura nombre completofie 
         cout << "Ingrese edad: ";
         cin >> per[i].edad;
         cout << "Es casado? (S/N): ";
