@@ -71,6 +71,11 @@ datos.pop_back();
     for (auto x : datos) {
         cout << x << " ";
     }
+    cout << boolalpha<<endl;
+
+    cout << datos.empty();
+    
+
 }
 
 
