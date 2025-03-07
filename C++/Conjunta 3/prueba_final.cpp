@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>  // Para generar números aleatorios
-#include <ctime>    // Para inicializar la semilla aleatoria
+#include <cstdlib>  
+#include <ctime>    
 
 using namespace std;
 
@@ -27,23 +27,22 @@ void ordenarConductores(vector<Conductor> &conductores) {
 }
 
 int main() {
-    srand(time(0)); // Inicializar la semilla aleatoria
+    srand(time(0)); 
 
     int n;
     
-    // Validar la entrada del número de conductores
     while (true) {
         cout << "Ingrese el numero de conductores: ";
         if (!(cin >> n) || n <= 0) {
             cout << "Caracter no valido. Intente de nuevo.\n";
-            cin.clear();  // Limpiar error
-            cin.ignore(10000, '\n'); // Descartar entrada incorrecta
+            cin.clear(); 
+            cin.ignore(10000, '\n'); 
         } else {
             break;
         }
     }
     
-    cin.ignore(); // Limpiar buffer
+    cin.ignore(); 
 
     vector<string> nombres(n);
     vector<int> total_kms(n, 0);
@@ -56,7 +55,7 @@ int main() {
 
         cout << "Kilometros recorridos por " << nombres[i] << " en cada dia de la semana:\n";
         for (int j = 0; j < 5; j++) {
-            int kms = rand() % 101; // Generar un número aleatorio entre 0 y 100
+            int kms = rand() % 101; 
             cout << dias[j] << ": " << kms << " km\n";
             total_kms[i] += kms;
         }
@@ -71,7 +70,6 @@ int main() {
 
     ordenarConductores(conductores);
 
-    // Verificar si hay empate en el primer puesto
     bool empate = false;
     if (n > 1 && conductores[0].total_kms == conductores[1].total_kms) {
         empate = true;
@@ -83,16 +81,14 @@ int main() {
         cout << conductor.nombre << " - " << conductor.total_kms << " km\n";
     }
 
-    // Mostrar el ganador o si hay empate
     if (empate) {
         cout << "\nEmpate entre: " << conductores[0].nombre << " y " << conductores[1].nombre 
-             << " con " << conductores[0].total_kms << " km\n";
+            << " con " << conductores[0].total_kms << " km\n";
     } else {
         cout << "\nConductor con mayor kilometraje: " << conductores[0].nombre 
-             << " con " << conductores[0].total_kms << " km\n";
+            << " con " << conductores[0].total_kms << " km\n";
     }
 
-    // Mostrar la tabla de posiciones en forma descendente
     cout << "\nTabla de posiciones de los conductores en forma descendente:\n";
     for (const auto &conductor : conductores) {
         cout << conductor.nombre << ": ";
