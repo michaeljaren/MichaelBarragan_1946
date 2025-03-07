@@ -92,7 +92,7 @@ int main() {
     cout << "\nTabla de posiciones de los conductores en forma descendente:\n";
     for (const auto &conductor : conductores) {
         cout << conductor.nombre << ": ";
-        for (int j = 0; j < conductor.total_kms / 10; j++) { 
+        for (int j = 0; j < conductor.total_kms / 10; j++) {  
             cout << "*";
         }
         cout << " (" << conductor.total_kms << " km)\n";
